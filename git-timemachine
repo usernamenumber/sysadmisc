@@ -1,6 +1,7 @@
 #!/bin/bash
 # Prints the content of a given file, or specific lines of that file, for each revision.
 # Based on http://stackoverflow.com/questions/17785265/list-all-the-versions-of-a-given-line-number-in-the-git-history
+# Place this somewhere in your path and you can invoke it with `git timemachine ...` (see full usage below)
 
 function usage() {
     echo ""
