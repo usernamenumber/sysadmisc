@@ -5,7 +5,7 @@
 
 function usage() {
     echo ""
-    echo "Useage: $(basename $0) FILE [STARTLINE [ENDLINE]]" >&2
+    echo "Usage: $(basename $0) FILE [STARTLINE [ENDLINE]]" >&2
     echo ""
 }
 
