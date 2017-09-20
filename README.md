@@ -11,3 +11,4 @@ Script | Description
 `git-timemachine` | "When did the code on line X change from Y to Z?" *(save in your path, then you can invoke it as `git timemachine FILE [STARTLINE [ENDLINE]]`)* 
 `large_recent_files.sh` | "Why is my disk full again?" (simple one-liner that displays the 20 largest files in `~` that were modified in the last day)
 `ppt2txt.py` | Quick and dirty script to extract the notes from a PowerPoint presentation 
+`shorten_path.py` | convert long paths to short for custom prompts e.g. `/var/log/thingy/doodad` to `/v/l/t/doodad`.
