@@ -1,11 +1,16 @@
 import os, os.path
 
-def shorten_path(path, max=50):
+def shorten_path(path, max=50, sub_home=True):
 	chars = len(path)
 	if chars <= max:
 		return path
-	
 	reduction_goal = chars - max
+
+	if sub_home:
+		home = os.getenv('HOME')
+		if home not in (None, ''):
+			path = path.replace(home, '~')
+			
 	components = path.split(os.path.sep)
 	for i in range(len(components) - 1):
 		component = components[i]
@@ -20,7 +25,3 @@ def shorten_path(path, max=50):
 if __name__ == '__main__':
 	d = os.getcwd()
 	print shorten_path(d)
-	print shorten_path(d, 40)
-	print shorten_path(d, 30)
-	print shorten_path(d, 20)
-	print shorten_path(d, 10)
