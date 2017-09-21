@@ -1,16 +1,16 @@
 #!/usr/bin/python
 import os, os.path
 
-def shorten_path(path, max=50, sub_home=True):
+def shorten_path(path, max_length=50, sub_home=True):
 	if sub_home:
 		home = os.path.realpath(os.getenv('HOME'))
 		if home not in (None, ''):
 			path = path.replace(home, '~')
 
 	chars = len(path)
-	if chars <= max:
+	if chars <= max_length:
 		return path
-	reduction_goal = chars - max
+	reduction_goal = chars - max_length
 
 	components = path.split(os.path.sep)
 	for i in range(len(components) - 1):
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     d = os.getcwd()
     try:
         rows, columns = os.popen('stty size', 'r').read().split()
-        max = max(int(columns) - 40, 1)
+        max_length = max(int(columns) - 40, 1)
     except:
-        max=50
-    print shorten_path(d, max=max)
+        max_length=50
+    print shorten_path(d, max_length=max_length)
