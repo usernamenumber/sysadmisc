@@ -12,3 +12,4 @@ Script | Description
 `large_recent_files.sh` | "Why is my disk full again?" (simple one-liner that displays the 20 largest files in `~` that were modified in the last day)
 `ppt2txt.py` | Quick and dirty script to extract the notes from a PowerPoint presentation 
 `shorten_path.py` | convert long paths to short for custom prompts e.g. `/var/log/thingy/doodad` to `/v/l/t/doodad`.
+`remind.sh` | quickly set a reminder for an absolute or relative time (requires system-notify)
