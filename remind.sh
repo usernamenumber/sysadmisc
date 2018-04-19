@@ -10,12 +10,20 @@
 # Default reminder time
 T=1h 
 
-# Check for a time descriptor in the first argument
-if [[ "$1" =~ ^[0-9:]+[smh]?$ ]] ; then
+## Check for a time descriptor in the first argument
+# Relative time
+if [[ "$1" =~ ^[0-9]\s*[mhsd] ]] ; then
     T=$1 ; shift
 
-    # Convert absolute time to relative
-    [[ "$T" =~ ":" ]] && T=$[ ($(date +%s -d "$T") - $(date +%s)) / 60 ]"m"
+# Absolute time, which we'll convert to relative minutes
+elif [[ "$1" =~ ^[0-9:]+(am|pm|[ap]|)$ ]] ; then
+    T=$1 ; shift
+
+    # Convert "HH:MMa" to "HH:MM am, so `date` can parse it"
+    [[ "$T" =~ [ap]$ ]] && T=$(echo $T | sed 's,\s*\([ap]\)\s*$, \1m,')
+
+    # Convert time to minutes-from-now
+    T=$[ ($(date +%s -d "$T") - $(date +%s)) / 60 ]"m"
 fi
 
 notify-send "Reminder set for $T from now..."
