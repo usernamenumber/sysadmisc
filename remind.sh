@@ -12,7 +12,7 @@ T=1h
 
 ## Check for a time descriptor in the first argument
 # Relative time
-if [[ "$1" =~ ^[0-9]\s*[mhsd] ]] ; then
+if [[ "$1" =~ ^[0-9]+\s*[mhsd]?$ ]] ; then
     T=$1 ; shift
 
 # Absolute time, which we'll convert to relative minutes
