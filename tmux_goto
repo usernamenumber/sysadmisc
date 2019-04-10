@@ -1,0 +1,54 @@
+#!/bin/bash
+
+if [ "$1" == "-h" -o "$1" == "--help" ]
+then
+    cat <<END >&2
+Switch to the tmux session matching REGEX.
+If no REGEX is provided, all sessions are listed.
+If there are more than one options, present a menu.
+USAGE: $(basename $0) [REGEX]
+END
+    exit 1
+fi
+
+IFS='
+'
+SEARCH="$1"
+if [ -z "$SEARCH" ]
+then
+    RES=$(tmux list-windows -a) || {
+        echo "tmux list-windows failed or there were no windows matching '$SEARCH'" >&2
+        exit 2
+    }
+else
+    RES=$(tmux list-windows -a | grep -i "$SEARCH") || {
+        echo "tmux list-windows failed or there were no windows matching '$SEARCH'" >&2
+        exit 2
+    }
+fi
+NRES=$(echo "$RES" | wc -l)
+
+function menu() {
+    n=0
+    for r in $RES
+    do
+        let n=$[ $n + 1 ]
+        echo "$n.  $r"
+    done
+    read -p "Select window number: " SEL
+}
+
+if [ $NRES -eq 1 ]
+then
+    TARGET=$(echo "$RES" | cut -d: -f1,2)
+else
+    menu
+    # TODO: sanity-check sel, re-run menu if dumb
+    [ -z "$SEL" ] && {
+        echo "No selection made. Exiting."
+        exit
+    }
+    TARGET=$(echo "$RES" | head -n+$SEL | tail -n1 | cut -d: -f1,2)
+fi
+
+[ -n "$TARGET" ] && tmux switch-client -t $TARGET
