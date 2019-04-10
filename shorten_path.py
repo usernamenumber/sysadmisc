@@ -27,7 +27,7 @@ if __name__ == '__main__':
     d = os.getcwd()
     try:
         rows, columns = os.popen('stty size', 'r').read().split()
-        max_length = max(int(columns) - 40, 1)
+        max_length = max(int(columns) - 80, 1)
     except:
         max_length=50
     print shorten_path(d, max_length=max_length)
