@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "=== Unpushed Changes ==="
+git log HEAD...origin/mainline
+
+echo ""
+echo "=== Uncommitted Changes ==="
+[ "$(git status --porcelain)" == "" ] || git status
