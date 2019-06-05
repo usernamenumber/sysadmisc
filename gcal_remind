@@ -1,0 +1,33 @@
+#!/bin/bash
+
+EVENTS_IN_MINS=10
+NOTIFICATION_LOG="/tmp/gcalcli-notifications-$(date +%Y%m%d)"
+
+IFS='
+'
+events() {
+    gcalcli remind $EVENTS_IN_MINS "echo %s" | tr -d \' | tr -d \"
+}
+
+notification_sent() {
+    grep "^${@}$" $NOTIFICATION_LOG &>/dev/null
+}
+
+notify() {
+    notify-send -u critical -i calendar "$@"
+}
+
+check() {
+    for e in $(events) ; do 
+        if notification_sent "$e" ; then
+            echo "Already notified for $e"
+        else
+            notify $e && echo "$e" >> $NOTIFICATION_LOG
+        fi
+    done
+}
+
+while true ; do 
+    check
+    sleep 60
+done
