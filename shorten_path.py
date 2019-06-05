@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 import os, os.path
 
 def shorten_path(path, max_length=50, sub_home=True):
