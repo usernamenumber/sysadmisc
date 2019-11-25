@@ -7,6 +7,7 @@ from argparse import ArgumentParser
 from subprocess import Popen, PIPE
 
 DEBUG=False
+BROWSER="firefox"
 def dbg(s):
     if not DEBUG:
         return
@@ -20,7 +21,7 @@ def handle_cmd(cmd, accept_raw=True):
     # URL
     if match(r'https?://.+', cmd.strip()):
         cmd = cmd.split().pop(0)
-        cmd = "firefox " + cmd
+        cmd = "$BROWSER " + cmd
     # local file
     elif cmd.strip().startswith('/'):
         cmd = "open {}".format(cmd)
