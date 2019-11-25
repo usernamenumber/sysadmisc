@@ -12,9 +12,10 @@ fi
 FN=$1
 PID=$(fuser ${FN} 2>&1 | awk '{print $2}')
 TTY=$(readlink -f /proc/${PID}/fd/0)
-TARGET=$(tmux list-windows -aF '#{pane_tty}, #{session_name}:#{window_index}' | grep ${TTY} | awk '{print $2}')
+TARGET=$(tmux list-panes -aF '#{pane_tty}, #{session_name}:#{window_index}' | grep "${TTY}\>" | awk '{print $2}' | head -n1)
 if [ -z "$TARGET" ] ; then
-  echo "No tmux session found using TTY $TTY" >&2
+  COMM=$(ps -axo 'pid,comm' | awk "/\<$PID\>/ "'{print $2}')
+  echo "File is opened by $COMM PID $PID on $TTY, which is not associated with a tmux session" >&2
   exit 1
 fi
 tmux switch-client -t $TARGET
