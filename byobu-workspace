@@ -1,0 +1,11 @@
+#!/bin/bash
+
+B=$(git -c color.branch=false branch 2>/dev/null | grep -Po '(?<=\* ).*' --color=never)
+if [ -n "$B" ]  ; then
+    D=$(basename $(pwd))
+else
+    D=$(shorten_path.py | sed 's,^~/*,,')
+    D="${D:-'home'}"
+fi
+SNAME="$D${B:+@$B}"
+/usr/bin/byobu new-session -A -s $SNAME
