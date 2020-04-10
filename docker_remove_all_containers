@@ -1,0 +1,2 @@
+#!/bin/bash
+for i in $(docker ps -aq) ; do docker stop $i ; docker rm -v $i ; done
