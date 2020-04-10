@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ $(pgrep $(basename $0) | wc -l) -gt 1 ] ; then
+  echo 'Already running!'
+  exit
+fi
+
 EVENTS_IN_MINS=10
 NOTIFICATION_LOG="/tmp/gcalcli-notifications-$(date +%Y%m%d)"
 
