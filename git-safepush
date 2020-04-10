@@ -1,0 +1,35 @@
+#!/bin/bash
+
+check_branch() {
+    CURR_BRANCH=$(git branch | grep -Po '(?<=\* ).*')
+    if [ "$CURR_BRANCH" == "master" ] ; then
+        read -p "=== Whoa there, cowboy. Do you really want to push to master? [y/N] " ANS
+        [ "$ANS" != "y" ] && exit
+    fi
+    true
+}
+
+check_rebase() {
+    NUM_UNPUSHED_COMMITS=$(git log origin/master..HEAD | grep '^commit ' | wc -l)
+    if [ "$NUM_UNPUSHED_COMMITS" -gt 1 ] ; then
+        echo "=== Multiple commits will be pushed...."
+        git log origin/master..HEAD
+        echo ""
+        read -p "=== Do you want to rebase? [Y/n] " ANS
+        if [ "$ANS" != "n" ] ; then
+            git rebase -i origin/master
+            echo ""
+            echo "=== New push list:"
+            git log origin/master..HEAD
+            echo ""
+            read -p "=== Press Enter to continue, ^c to bail"
+        fi
+    fi
+    true
+}
+
+# TODO: regression tests??
+
+check_branch && \
+check_rebase && \
+git push
