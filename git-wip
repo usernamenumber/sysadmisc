@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# For every file that has been altered since the last commit, create
+# a commit containing only that file. If the file is part of an
+# existing commit on this branch (and not the parent branch), the 
+# commit will be called
+#
+#    wip <previous commit title>
+#
+# Otherwise it will be called
+#
+#    wip <filename>
+#
+# It then starts an interactive rebase where wip commits can be
+# easily matched with and [f]ixup'd exsting commits or [r]enamed
+# into new commits.
+#
+# This is intended for situations where revisions to files in a PR 
+# are expected to be squashed into one of the original commits.
+
+
+# NEXT GEN:
+# automatically run this vim script to turn wips into fixups and sort
+#
+#:%s,^pick\( [0-9a-z]\+ add\)\@=,f,
+#/^#
+#k
+#dG
+#:!sort -k3 " TODO this only sorts by the 3rd work, need 3-EOL
+#G
+#p
+
+set -xeu 
+
+CHANGED=$(git diff --name-only --diff-filter CM) 
+ADD_REMOVED=$(git status --porcelain | grep '^[ADR]' | awk '{ print $2 }')
+
+for i in $CHANGED $ADD_REMOVED
+do 
+  lastCommit=$(git log origin...HEAD --format=oneline -- $i  | cut -d' ' -f2- | head -n1)
+  [ -n "$lastCommit" ] && desc="$lastCommit" || desc=$i
+  git commit -m "wip ${desc}" $i
+done
+
+git rebase -i origin

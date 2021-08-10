@@ -1,0 +1,23 @@
+#!/bin/bash
+
+unset PAGER
+FN="${1}"
+
+# TODO: swith to this vvv
+# g log -g  $(git rev-parse --abbrev-ref HEAD) --format=format:'%ai %H%n%s' --shortstat  -- src/preapproval/components/simulator/pie-chart/index.tsx
+#
+# Then, display NEXT/PREV summaries and prompt for (d)iff (N)ext (p)rev (q)uit
+# each time
+#
+# Also, switch to node?
+
+COMMITS="$(git reflog -v --single-worktree -- $FN  | awk '{if($3 == "commit:") { print $1 }}')"
+NEXT=""
+for PREV in $COMMITS ; do 
+  if [ -z "$NEXT" ] ; then
+    NEXT=$PREV 
+    continue
+  fi
+  git diff $PREV $NEXT -- $FN
+  NEXT=$PREV 
+done
