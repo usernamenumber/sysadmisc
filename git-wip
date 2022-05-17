@@ -32,6 +32,15 @@
 
 set -xeu 
 
+# Back up to the repo root
+while [ ! -d .git ] ; do
+	cd ..
+  if [ "$(pwd)" = '/' ]; then
+   echo "Could not find .git in this or any parent directory" >&2
+   exit 1
+  fi
+done
+
 CHANGED=$(git diff --name-only --diff-filter CM) 
 ADD_REMOVED=$(git status --porcelain | grep '^[ADR]' | awk '{ print $2 }')
 
