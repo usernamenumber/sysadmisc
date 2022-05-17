@@ -51,4 +51,4 @@ do
   git commit -m "wip ${desc}" $i
 done
 
-git rebase -i origin
+[ -d .git/rebase-merge ] || git rebase -i origin/main
