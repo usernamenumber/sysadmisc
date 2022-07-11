@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# return all files to which current user has committed changes
+for f in $(git log --author=$(git config --get user.email) --pretty=format: --name-only | sort -u)
+do
+    [ -e $f ] && echo $f || echo "$f (deleted)" >&2
+done
+## v1
+#git log --author=$(git config --get user.email) --pretty=format: --name-only | \
+#  sort -u
