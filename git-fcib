@@ -2,4 +2,5 @@
 
 #branch=$(git branch | grep '^*' | awk '{print $2}')
 #git diff --name-only master $branch
-git diff --name-only master HEAD
+#git diff --name-only main HEAD
+git diff origin --name-only
