@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# SSH Agent
+# https://yashagarwal.in/posts/2017/12/setting-up-ssh-agent-in-i3/
+if [ -f ~/.ssh/agent.env ] ; then
+    . ~/.ssh/agent.env > /dev/null
+    if [ "$(ps --pid $SSH_AGENT_PID -ho comm)" != 'ssh-agent' ]; then 
+        echo "Stale agent file found. Spawning new agent… "
+        eval `ssh-agent | tee ~/.ssh/agent.env`
+        ssh-add
+    fi
+fi
+cat ~/.ssh/agent.env
