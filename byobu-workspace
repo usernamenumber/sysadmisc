@@ -1,13 +1,29 @@
 #!/bin/bash
 
-B=$(git -c color.branch=false branch 2>/dev/null | \
-  grep -Po '(?<=\* ).*' --color=never
-)
+branch_name() {
+    # Getting the branch name this way only works if 
+    # we have a grep capable of lookbehinds, e.g. gnu grep
+    # This does not include OSX by default
+    #
+    # TODO: probably a better way to get branch name
+    #
+    if [ "$(uname)" = "Darwin" ] ; then
+        which ggrep &>/dev/null && GREP="ggrep"
+    else
+        GREP="grep"
+    fi
+    
+    [ -n "$GREP" ] && \
+        git -c color.branch=false branch 2>/dev/null | \
+            ${GREP} -Po '(?<=\* ).*' --color=never
+}
+    
+B=$(branch_name)
 if [ -n "$B" ]  ; then
     D=$(basename $(pwd))
 else
-    D=$(shorten_path.py | sed 's,^~/*,,')
-    D="${D:-'home'}"
+    which shorten_path.py &>/dev/null || D=$(shorten_path.py | sed 's,^~/*,,')
+    D="${D:-home}"
 fi
 SNAME=$(echo "$D${B:+@${B}}" | sed 's,\.,_,g')
-/usr/bin/byobu new-session -A -s $SNAME
+byobu new-session -A -s $SNAME
