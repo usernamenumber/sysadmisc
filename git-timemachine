@@ -22,25 +22,21 @@ EOF
 }
 
 
-if [ $# -eq 0 ] 
-then
+if [ $# -eq 0 ] ; then
     usage
     exit 1
 fi
 
-if [ $# -ge 4 ]
-then
+if [ $# -ge 4 ]; then
     usage
     exit 2
 fi
 
-if [ $# -ge 1 ] 
-then
+if [ $# -ge 1 ] ; then
     FILE=$1
 fi
 
-if [ $# -eq 2 ]
-then
+if [ $# -eq 2 ]; then
     if [[ "$2" =~ ^[0-9]\+$ ]] ; then
 	RANGE="$2,$2"
     else
@@ -49,8 +45,7 @@ then
     LINES="-L $RANGE"
 fi
 
-if [ $# -eq 3 ]
-then
+if [ $# -eq 3 ]; then
     LINES="-L $2,$3"
 fi
 
