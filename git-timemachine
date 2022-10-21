@@ -58,15 +58,17 @@ function clean() {
     echo "$1" | sed 's/^.*[0-9])  //'
 }
 
+function show() {
+    echo "$1" | sed 's/^\(.*[0-9])\)  \(.*\)$/== As of commit \1 ==\n\2\n/'
+}
+
 OLD="" 
 for REV in $(git log --format=format:%H $FILE)
 do
     NEW=$(git blame $FILE $LINES $REV 2>/dev/null || echo "No match")
     if [ "$(clean $OLD)" != "$(clean $NEW)" ]
     then 
-        echo "=== As of revision $REV ==="
-        echo "$NEW"
-        echo ""
+        show $NEW
         OLD=$NEW
     fi
 done
