@@ -4,10 +4,23 @@
 # Place this somewhere in your path and you can invoke it with `git timemachine ...` (see full usage below)
 
 function usage() {
-    echo ""
-    echo "Usage: $(basename $0) FILE [STARTLINE [ENDLINE]]" >&2
-    echo ""
+cat <<EOF
+	Usage: $(basename $0) FILE [START [END]]
+
+	Where START and END use the same format as git blame, i.e.
+	START can be any of:
+	- Line number (ex: 100)
+	- /Regex/ (ex: /foo/)
+
+	and END can be any of the above plus:
+	- +offset (ex: +1)
+	- -offset (ex: -1)
+
+	if END is omitted, only matching lines will be shown
+	  
+EOF
 }
+
 
 if [ $# -eq 0 ] 
 then
@@ -28,7 +41,12 @@ fi
 
 if [ $# -eq 2 ]
 then
-    LINES="-L $2,$2"
+    if [[ "$2" =~ ^[0-9]\+$ ]] ; then
+	RANGE="$2,$2"
+    else
+	RANGE="$2,+1"
+    fi
+    LINES="-L $RANGE"
 fi
 
 if [ $# -eq 3 ]
@@ -36,11 +54,15 @@ then
     LINES="-L $2,$3"
 fi
 
+function clean() {
+    echo "$1" | sed 's/^.*[0-9])  //'
+}
+
 OLD="" 
 for REV in $(git log --format=format:%H $FILE)
 do
-    NEW=$(git blame $FILE $LINES $REV)
-    if [ "$OLD" != "$NEW" ]
+    NEW=$(git blame $FILE $LINES $REV 2>/dev/null || echo "No match")
+    if [ "$(clean $OLD)" != "$(clean $NEW)" ]
     then 
         echo "=== As of revision $REV ==="
         echo "$NEW"
