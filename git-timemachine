@@ -55,7 +55,7 @@ function clean() {
 
 function show() {
     echo "$@" 
-    echo "----"
+    echo ""
 }
 
 if [ ! -e "$FILE" ]; then
@@ -67,19 +67,18 @@ fi
 OLD="==first entry==" 
 for REV in $(git log --format=format:%H $FILE)
 do
-    if [ "$OLD" = "==first entry==" ]; then
-        OLD=$NEW
-        continue
-    fi
     NEW=$(git blame $FILE $LINES $REV 2>/dev/null)
     GIT_RETURN=$?
-    if [ "$(clean "$OLD")" != "$(clean "$NEW")" ]; then 
+    if [ "$OLD" = "==first entry==" ]; then
+        echo "== Current version =="
+        show "$NEW"
+    elif [ "$(clean "$OLD")" != "$(clean "$NEW")" ]; then 
+        echo "== As of commit ${REV:0:8} =="
         if [ $GIT_RETURN -eq 0 ]; then 
             show "$NEW"
         else
-            echo "== As of commit ${REV:0:8} =="
             echo "NO MATCH"
         fi
-        OLD=$NEW
     fi
+    OLD=$NEW
 done
