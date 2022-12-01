@@ -49,6 +49,15 @@ if [ $# -eq 3 ]; then
     LINES="-L $2,$3"
 fi
 
+function blame() {
+    RES=$(git blame $@ 2>/dev/null)
+    if [ $? -eq 0 ]; then
+        echo "$RES"
+    else
+        echo "NO MATCH"
+    fi
+}
+
 function clean() {
     echo "$@" | sed 's/^.*[0-9])  //'
 }
@@ -63,22 +72,18 @@ if [ ! -e "$FILE" ]; then
     exit 3
 fi
 
-
-OLD="==first entry==" 
+OLD=$(blame $FILE $LINES)
 for REV in $(git log --format=format:%H $FILE)
 do
-    NEW=$(git blame $FILE $LINES $REV 2>/dev/null)
-    GIT_RETURN=$?
-    if [ "$OLD" = "==first entry==" ]; then
-        echo "== Current version =="
-        show "$NEW"
-    elif [ "$(clean "$OLD")" != "$(clean "$NEW")" ]; then 
-        echo "== As of commit ${REV:0:8} =="
-        if [ $GIT_RETURN -eq 0 ]; then 
-            show "$NEW"
-        else
-            echo "NO MATCH"
-        fi
+    NEW=$(blame $FILE $LINES $REV 2>/dev/null)
+
+    if [ "$(clean "$OLD")" != "$(clean "$NEW")" ]; then 
+        echo "== As of commit ${PREVREV:0:8} =="
+        show "$OLD"
     fi
+    PREVREV=$REV
     OLD=$NEW
 done
+
+echo "== As of commit ${REV:0:8} =="
+show "$NEW"
