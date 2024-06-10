@@ -6,6 +6,7 @@ Miscellaneous sysadmin-y scripts and whatnot. See comments at the top of each sc
 
 Script | Description
 -------|------------
+`awslogs.sh` | View or tail slices of cloudwatch logs. See `-h` for details
 `byobu-workspace` | Create or switch to a byobu session based on current repo+branch
 `chkload.sh` | "What's using up resources on this machine?" 
 `color_prompt.sh` | Give each machine a different color-coded prompt 
